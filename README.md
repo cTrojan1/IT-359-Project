@@ -1,5 +1,5 @@
 # IT-359-Project
-Type description here
+Project description here
 
 ## Team Members
 - Cameron Trojan
