@@ -6,7 +6,8 @@ Our project for this course is going to be an ethical keylogging software that w
 - Justin Walinski
 
 ## Full Project Idea
-Our team is going to create a keylogging software that will allow us to read user inputs on a specefied machine.
+Our team is going to create a keylogging software that will allow us to read user inputs on a specefied machine. This application will allow
+us to read information from a machine remotely and access the data associated with the user inputs.
 # Key components
 - TXT file to store key strokes
 - Exportable code to a USB drive for portability
