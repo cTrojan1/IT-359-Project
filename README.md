@@ -15,7 +15,21 @@ we will be able to easily recognize and understand patterns, diagnose anomalies,
 - TXT file to store key strokes
 - Exportable code to a USB drive for portability
 - Software transmission (Phishing or physical hardware)
-- Type of input related to the keystrokes (passwords, usernames, etc.)
 - Timestamps relating to the logged information (MM/DD)
-- Interval screenshots (Potential upgrade)
-- Website activity and associated keystrokes (Potential upgrade)
+- Interval screenshots
+- Website activity
+
+# Instructions
+- Once downloaded, the .py file can be run from an IDE or a CMD prompt.
+- Once the program is started (.py), there will be output in the kernel relating to the OS,
+  and **a file titled data.txt will be created** somewhere on your system. This .txt file will contain all information captured.
+- If the program is started via the .exe, there will be no notification of the program running. The data.txt file will be created.
+- Every time the screen changes (Active window changes), a screenshot will be taken and **stored in a folder titled "Screenshots".**
+- To terminate the program, either end the process from the CMD shell or the IDE.
+- To terminate the .exe program, enter Task Manager and locate the .exe.
+
+# Dependencies
+- This program will require multiple pip installs to function properly
+- pywin
+- keyboards
+- 
