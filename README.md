@@ -22,7 +22,8 @@ we will be able to easily recognize and understand patterns, diagnose anomalies,
 # Instructions
 - Once downloaded, the .py file can be run from an IDE or a CMD prompt.
 - Once the program is started (.py), there will be output in the kernel relating to the OS,
-  and **a file titled data.txt will be created** somewhere on your system. This .txt file will contain all information captured.
+  and **a file titled data.txt will be created** somewhere on your system. This .txt file will contain all information captured
+  while the program is running. Data will show website activity and all keys pressed until the Enter key is pressed.
 - If the program is started via the .exe, there will be no notification of the program running. The data.txt file will be created.
 - Every time the screen changes (Active window changes), a screenshot will be taken and **stored in a folder titled "Screenshots".**
 - To terminate the program, either end the process from the CMD shell or the IDE.
