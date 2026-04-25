@@ -31,8 +31,8 @@ we will be able to easily recognize and understand patterns, diagnose anomalies,
 
 # Dependencies
 This program will require multiple dependencies to function properly. Please install these using pip to use the program.
-- 'pip install keyboard'
-- mss
-- pillow
-- pywin32
-- netifaces
+- `pip install keyboard`
+- `pip install mss`
+- `pip install pillow`
+- `pip install pywin32`
+- `pip install netifaces`
