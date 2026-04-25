@@ -29,7 +29,9 @@ we will be able to easily recognize and understand patterns, diagnose anomalies,
 - To terminate the .exe program, enter Task Manager and locate the .exe.
 
 # Dependencies
-- This program will require multiple pip installs to function properly
-- pywin
-- keyboards
-- 
+This program will require multiple dependencies to function properly. Please install these using pip to use the program.
+- keyboard
+- mss
+- pillow
+- pywin32
+- netifaces
