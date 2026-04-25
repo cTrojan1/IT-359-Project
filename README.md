@@ -31,7 +31,7 @@ we will be able to easily recognize and understand patterns, diagnose anomalies,
 
 # Dependencies
 This program will require multiple dependencies to function properly. Please install these using pip to use the program.
-- keyboard
+- 'pip install keyboard'
 - mss
 - pillow
 - pywin32
