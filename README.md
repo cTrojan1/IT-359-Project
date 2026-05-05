@@ -36,3 +36,8 @@ This program will require multiple dependencies to function properly. Please ins
 - `pip install pillow`
 - `pip install pywin32`
 - `pip install netifaces`
+
+# Report
+Throughout this process, we were able to explore many interesting avenues to reach our end goal. The overall idea for the project was
+almost entirely hit, besides a few quality adjustments, such as the "Tab Switch" extension to better manipulate the screenshot function.
+Cameron and Justin were able to replicate a real "hidden" keylogging software that accurately records user keystrokes and window switches. This project gave us real-world experience into how spyware such as keyloggers can affect someones every day life and expose them to substantial threats. Cameron and Justin worked side by side during the development of this program on one computer due to the dependencies involved in the program.
